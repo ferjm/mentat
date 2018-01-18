@@ -802,6 +802,19 @@ mod test {
         associate_ident(&mut schema, NamespacedKeyword::new("foo", "bat"), 99);
         add_attribute(&mut schema, 99, attr3);
 
+        let attr4 = Attribute {
+            index: true,
+            value_type: ValueType::Boolean,
+            fulltext: false,
+            unique: None,
+            multival: false,
+            component: false,
+            cached: true,
+        };
+
+        associate_ident(&mut schema, NamespacedKeyword::new("foo", "bam"), 100);
+        add_attribute(&mut schema, 100, attr4);
+
         let value = schema.to_edn_value();
 
         let expected_output = r#"[ {   :db/ident     :foo/bar
@@ -817,7 +830,12 @@ mod test {
     :db/valueType :db.type/boolean
     :db/cardinality :db.cardinality/one
     :db/unique :db.unique/identity
-    :db/component true }, ]"#;
+    :db/component true },
+{   :db/ident     :foo/bam
+    :db/valueType :db.type/boolean
+    :db/cardinality :db.cardinality/one
+    :db/index true
+    :db/cached true } ]"#;
         let expected_value = edn::parse::value(&expected_output).expect("to be able to parse").without_spans();
         assert_eq!(expected_value, value);
 

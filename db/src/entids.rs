@@ -74,7 +74,8 @@ pub fn might_update_metadata(attribute: Entid) -> bool {
         DB_INDEX |
         DB_IS_COMPONENT |
         DB_UNIQUE |
-        DB_VALUE_TYPE =>
+        DB_VALUE_TYPE |
+        DB_CACHED =>
             true,
         _ => false,
     }
@@ -89,19 +90,20 @@ lazy_static! {
 
     /// Attributes that are "schema related".  These might change the "schema" materialized view.
     pub static ref SCHEMA_SQL_LIST: String = {
-        format!("({}, {}, {}, {}, {}, {}, {})",
+        format!("({}, {}, {}, {}, {}, {}, {}, {})",
                 DB_CARDINALITY,
                 DB_DOC,
                 DB_FULLTEXT,
                 DB_INDEX,
                 DB_IS_COMPONENT,
                 DB_UNIQUE,
-                DB_VALUE_TYPE)
+                DB_VALUE_TYPE,
+                DB_CACHED)
     };
 
     /// Attributes that are "metadata" related.  These might change one of the materialized views.
     pub static ref METADATA_SQL_LIST: String = {
-        format!("({}, {}, {}, {}, {}, {}, {}, {})",
+        format!("({}, {}, {}, {}, {}, {}, {}, {}, {})",
                 DB_CARDINALITY,
                 DB_DOC,
                 DB_FULLTEXT,
@@ -109,6 +111,7 @@ lazy_static! {
                 DB_INDEX,
                 DB_IS_COMPONENT,
                 DB_UNIQUE,
-                DB_VALUE_TYPE)
+                DB_VALUE_TYPE,
+                DB_CACHED)
     };
 }

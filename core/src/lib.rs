@@ -477,6 +477,7 @@ pub enum AttributeBitFlags {
     IndexVAET     = 1 << 1,
     IndexFulltext = 1 << 2,
     UniqueValue   = 1 << 3,
+    CachedValue   = 1 << 4,
 }
 
 pub mod attribute {
@@ -533,6 +534,9 @@ pub struct Attribute {
     /// They are used to compose entities from component sub-entities: they are fetched recursively
     /// by pull expressions, and they are automatically recursively deleted where appropriate.
     pub component: bool,
+
+    /// `true` if this attribute is to be cached in an in-memory materialized view, i.e., it is `:db/cached true`.
+    pub cached: bool,
 }
 
 impl Attribute {
@@ -551,6 +555,9 @@ impl Attribute {
         }
         if self.unique.is_some() {
             flags |= AttributeBitFlags::UniqueValue as u8;
+        }
+        if self.cached {
+            flags |= AttributeBitFlags::CachedValue as u8;
         }
         flags
     }
@@ -583,6 +590,10 @@ impl Attribute {
             attribute_map.insert(values::DB_IS_COMPONENT.clone(), edn::Value::Boolean(true));
         }
 
+        if self.cached {
+            attribute_map.insert(values::DB_CACHED.clone(), edn::Value::Boolean(true));
+        }
+
         edn::Value::Map(attribute_map)
     }
 }
@@ -597,6 +608,7 @@ impl Default for Attribute {
             multival: false,
             unique: None,
             component: false,
+            cached: false,
         }
     }
 }
@@ -697,6 +709,7 @@ mod test {
             unique: None,
             multival: false,
             component: false,
+            cached: false,
         };
 
         assert!(attr1.flags() & AttributeBitFlags::IndexAVET as u8 != 0);
@@ -711,6 +724,7 @@ mod test {
             unique: Some(attribute::Unique::Value),
             multival: false,
             component: false,
+            cached: false,
         };
 
         assert!(attr2.flags() & AttributeBitFlags::IndexAVET as u8 == 0);
@@ -725,6 +739,7 @@ mod test {
             unique: Some(attribute::Unique::Identity),
             multival: false,
             component: false,
+            cached: false,
         };
 
         assert!(attr3.flags() & AttributeBitFlags::IndexAVET as u8 == 0);
@@ -757,6 +772,7 @@ mod test {
             unique: None,
             multival: false,
             component: false,
+            cached: false,
         };
         associate_ident(&mut schema, NamespacedKeyword::new("foo", "bar"), 97);
         add_attribute(&mut schema, 97, attr1);
@@ -768,6 +784,7 @@ mod test {
             unique: Some(attribute::Unique::Value),
             multival: true,
             component: false,
+            cached: false,
         };
         associate_ident(&mut schema, NamespacedKeyword::new("foo", "bas"), 98);
         add_attribute(&mut schema, 98, attr2);
@@ -779,6 +796,7 @@ mod test {
             unique: Some(attribute::Unique::Identity),
             multival: false,
             component: true,
+            cached: false,
         };
 
         associate_ident(&mut schema, NamespacedKeyword::new("foo", "bat"), 99);

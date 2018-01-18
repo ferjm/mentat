@@ -65,6 +65,7 @@ pub struct AttributeBuilder {
     index: Option<bool>,
     fulltext: Option<bool>,
     component: Option<bool>,
+    cached: Option<bool>,
 }
 
 impl AttributeBuilder {
@@ -95,6 +96,11 @@ impl AttributeBuilder {
 
     pub fn component<'a>(&'a mut self, component: bool) -> &'a mut Self {
         self.component = Some(component);
+        self
+    }
+
+    pub fn cached<'a>(&'a mut self, cached: bool) -> &'a mut Self {
+        self.cached = Some(cached);
         self
     }
 
@@ -134,6 +140,9 @@ impl AttributeBuilder {
         }
         if let Some(component) = self.component {
             attribute.component = component;
+        }
+        if let Some(cached) = self.cached {
+            attribute.cached = cached;
         }
 
         attribute
@@ -297,6 +306,7 @@ mod test {
             unique: None,
             multival: false,
             component: false,
+            cached: false,
         });
         // attribute is unique by value and an index
         add_attribute(&mut schema, NamespacedKeyword::new("foo", "baz"), 98, Attribute {
@@ -306,6 +316,7 @@ mod test {
             unique: Some(attribute::Unique::Value),
             multival: false,
             component: false,
+            cached: false,
         });
         // attribue is unique by identity and an index
         add_attribute(&mut schema, NamespacedKeyword::new("foo", "bat"), 99, Attribute {
@@ -315,6 +326,7 @@ mod test {
             unique: Some(attribute::Unique::Identity),
             multival: false,
             component: false,
+            cached: false,
         });
         // attribute is a components and a `Ref`
         add_attribute(&mut schema, NamespacedKeyword::new("foo", "bak"), 100, Attribute {
@@ -324,6 +336,7 @@ mod test {
             unique: None,
             multival: false,
             component: true,
+            cached: false,
         });
         // fulltext attribute is a string and an index
         add_attribute(&mut schema, NamespacedKeyword::new("foo", "bap"), 101, Attribute {
@@ -333,6 +346,7 @@ mod test {
             unique: None,
             multival: false,
             component: false,
+            cached: false,
         });
 
         assert!(validate_schema_map(&schema.entid_map, &schema.schema_map).is_ok());
@@ -350,6 +364,7 @@ mod test {
             unique: Some(attribute::Unique::Value),
             multival: false,
             component: false,
+            cached: false,
         });
 
         let err = validate_schema_map(&schema.entid_map, &schema.schema_map).err();
@@ -372,6 +387,7 @@ mod test {
             unique: Some(attribute::Unique::Identity),
             multival: false,
             component: false,
+            cached: false,
         });
 
         let err = validate_schema_map(&schema.entid_map, &schema.schema_map).err();
@@ -394,6 +410,7 @@ mod test {
             unique: None,
             multival: false,
             component: true,
+            cached: false,
         });
 
         let err = validate_schema_map(&schema.entid_map, &schema.schema_map).err();
@@ -416,6 +433,7 @@ mod test {
             unique: None,
             multival: false,
             component: false,
+            cached: false,
         });
 
         let err = validate_schema_map(&schema.entid_map, &schema.schema_map).err();
@@ -437,6 +455,7 @@ mod test {
             unique: None,
             multival: false,
             component: false,
+            cached: false,
         });
 
         let err = validate_schema_map(&schema.entid_map, &schema.schema_map).err();

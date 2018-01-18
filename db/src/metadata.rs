@@ -169,6 +169,13 @@ pub fn update_schema_map_from_entid_triples<U>(schema_map: &mut SchemaMap, asser
                 }
             },
 
+            entids::DB_CACHED => {
+                match *value {
+                    TypedValue::Boolean(x) => { builder.component(x); },
+                    _ => bail!(ErrorKind::BadSchemaAssertion(format!("Expected [... :db/cached true|false] but got [... :db/cached {:?}]", value)))
+                }
+            },
+
             _ => {
                 bail!(ErrorKind::BadSchemaAssertion(format!("Do not recognize attribute {} for entid {}", attr, entid)))
             }

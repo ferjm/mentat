@@ -49,6 +49,7 @@ lazy_static! {
              (ns_keyword!("db", "isComponent"),       entids::DB_IS_COMPONENT),
              (ns_keyword!("db", "index"),             entids::DB_INDEX),
              (ns_keyword!("db", "fulltext"),          entids::DB_FULLTEXT),
+             (ns_keyword!("db", "cached"),            entids::DB_CACHED),
              (ns_keyword!("db", "noHistory"),         entids::DB_NO_HISTORY),
              (ns_keyword!("db", "add"),               entids::DB_ADD),
              (ns_keyword!("db", "retract"),           entids::DB_RETRACT),
@@ -117,6 +118,8 @@ lazy_static! {
  :db/index             {:db/valueType   :db.type/boolean
                         :db/cardinality :db.cardinality/one}
  :db/fulltext          {:db/valueType   :db.type/boolean
+                        :db/cardinality :db.cardinality/one}
+ :db/cached            {:db/valueType   :db.type/boolean
                         :db/cardinality :db.cardinality/one}
  :db/noHistory         {:db/valueType   :db.type/boolean
                         :db/cardinality :db.cardinality/one}

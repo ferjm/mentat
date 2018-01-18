@@ -67,6 +67,8 @@ pub enum AttributeAlteration {
     NoHistory,
     /// - change whether an attribute is treated as a component
     IsComponent,
+    /// - change whether an attribute is cached in an in-memory materialized view
+    Cached,
 }
 
 /// An alteration to an ident.

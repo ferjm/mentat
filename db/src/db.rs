@@ -1059,6 +1059,13 @@ SELECT EXISTS
                         }
                     }
                 },
+                &Cached => {
+                    // TODO moving from :db/cached true to :db/cached false will drop any in-memory materialized views for that attribute
+                    // moving from :db/cached false to :db/cached true will set up an in-memory materialized view for that attribute
+                    // Question: Do we need to ensure that some caches (e.g. the entid map, attribute map etc.) cannot be changed?
+                    bail!(ErrorKind::NotYetImplemented(format!("Cannot alter schema attribute {} to be :db/cached {}", entid, attribute.cached)));
+
+                },
                 &NoHistory | &IsComponent => {
                     // There's no on disk change required for either of these.
                 },

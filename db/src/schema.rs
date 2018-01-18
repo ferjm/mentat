@@ -174,6 +174,12 @@ impl AttributeBuilder {
                 mutations.push(AttributeAlteration::IsComponent);
             }
         }
+        if let Some(cached) = self.cached {
+            if cached != attribute.cached {
+                attribute.cached = cached;
+                mutations.push(AttributeAlteration::Cached);
+            }
+        }
 
         mutations
     }
